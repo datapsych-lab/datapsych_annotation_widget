@@ -9,10 +9,10 @@ The annotation interface (shown below) was designed to be simple an user friendl
 2. Navigates to a document using either the Document dropdown or the navigation buttons
 3. Saves annotations by clicking the save button or navigating to another note (annotations are automatically saved).
 
-<img width="1033" height="613" alt="Screenshot 2026-04-07 at 4 48 38 PM" src="https://github.com/user-attachments/assets/ad6c43d5-a0e0-4f5d-b58b-13c1ce0dcc30" />
+<img width="1032" height="693" alt="readme_screenshot" src="https://github.com/user-attachments/assets/4be3aa72-0df0-4275-bb37-4f1c98720155" />
 
 ## Inputs
-In addition to the configuration file described below, the annotation tool requires two files:
+In addition to the configuration file described below, the annotation tool requires two input files:
 
 ### Documents file
 The documents should be stored in a CSV file with two columns: 
@@ -38,3 +38,41 @@ Annotations are saved to JSON files. Output file names are formatted as `<projec
 }
 ```
   
+## Configuration
+All options, including the label schema are given in a configuration file that should be placed in the directory shared with annotators. Configuration files are in INI format. Three configuration examples are provided along with the repository and information on each of the required sections are given below:
+
+### [project]
+This section specifies the `ProjectName` parameter used for output file naming.
+
+```ini
+[project]
+ProjectName = Test
+```
+
+### [io]
+This section is used to specify the input files and output file directory. It should specify the following parameters:
+1. `AssignmentsFilePath`: Path to the annotator assignments CSV file. Annotators must have read permissions.
+2. `DocumentsFilePath`: Path to the documents CSV file. Annotators must have read permissions. If pulling from a SQL database, this should be left blank.
+3. `DocumentsTable`: If pulling from a SQL database, the name of the table containing documents is given here. If pulling from a CSV file, this is ignored.
+4. `DocumentIDColumn`: If pulling from a SQL database, the column containing document IDs.
+5. `DocumentTextColumn`: If pulling from a SQL database, the column containg document text.
+6. `OutputDirPath`: Path to the directory where output files will be stored. Annotators must have write permissions for this directory.
+
+```ini
+[io]
+AssignmentsFilePath = ./data/annotator_assignments.csv
+DocumentsFilePath = ./data/documents.csv
+DocumentsTable = 
+DocumentIDColumn = 
+DocumentTextColumn = 
+OutputDirPath = ./outputs/
+```
+
+### [document.labels]
+This section specifies the document-level labeling schema. This section may contain any number of parameters, each corresponding to a separate label type. Each label type is displayed in a separate tab as shown in the screenshot above. A parameter corresponds to the tab name and the label values are given in a pipe delimeted list like: `LabelName = <value1>|<value2>|<value3>`. Note that the tool does not force the values to be mutualy exclusive. This allows for additionally flexibility in the labeling schema, but if mutual exclusivity is needed, then annotators should be instructed to select only on label from each tab.
+
+```ini
+[document.labels]
+LabelName1 = <value1>|<value2>|<value3>
+LabelName2 = <value1>|<value2>|<value3>|<value4>
+```
